@@ -74,8 +74,9 @@ export default {
             }
             this.events.forEach((event) => {
               if (isEqualDateStr(event.date, tempItem.date)) {
-                tempItem.title = event.title
-                tempItem.desc = event.desc || ''
+                // copy all the properties from event
+                // FIXME seems sketchy
+                Object.assign(tempItem, event)
               }
             })
             tempArr.push(tempItem)
