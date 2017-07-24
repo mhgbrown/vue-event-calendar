@@ -9,11 +9,17 @@
     ></vue-event-calendar>
     <h2 class="t-center">Custom template</h2>
     <vue-event-calendar :events="demoEvents">
-      <template scope="props">
+      <template slot="events" scope="props">
         <div v-for="(event, index) in props.showEvents" class="event-item">
           <!-- In here do whatever you want, make you owner event template -->
           {{event}}
         </div>
+      </template>
+    </vue-event-calendar>
+    <h2 class="t-center">Date slot</h2>
+    <vue-event-calendar :events="demoEvents">
+      <template slot="date" scope="props">
+        <span class="mark"></span>
       </template>
     </vue-event-calendar>
   </div>
@@ -83,5 +89,14 @@ a {
 .t-center{
   text-align: center;
   margin: 20px;
+}
+.mark {
+  display: inline-block;
+  background-color: purple;
+  width: 25%;
+  height: 5px;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 </style>

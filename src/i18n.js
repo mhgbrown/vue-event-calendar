@@ -1,6 +1,6 @@
 export default {
   en: {
-    dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    dayNames: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
     monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
     format: 'MM/yyyy',
     fullFormat: 'dd/MM/yyyy',

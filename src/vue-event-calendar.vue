@@ -6,6 +6,9 @@
       :selectedDay='selectedDayEvents.date'
       @cur-day-changed="handleChangeCurDay"
       @month-changed="handleMonthChanged">
+      <template scope="props">
+        <slot name="date" :date="props.date"></slot>
+      </template>
     </cal-panel>
     <cal-events
       :dayEvents="selectedDayEvents"
