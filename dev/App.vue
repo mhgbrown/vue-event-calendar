@@ -19,8 +19,8 @@
     <h2 class="t-center">Date slot</h2>
     <vue-event-calendar :events="demoEvents">
       <template slot="date" scope="props">
-        <span v-if="props.date.customProperty" class="mark">
-          {{ props.date.customProperty[0] }}
+        <span v-if="props.date.data.customProperty" class="mark">
+          {{ props.date.data.customProperty[0] }}
         </span>
       </template>
     </vue-event-calendar>
@@ -37,21 +37,29 @@ export default {
         date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`,
         title: 'Title-1',
         desc: 'longlonglong description',
-        customProperty: ['Hello']
+        data: {
+          customProperty: ['Hello']
+        }
       },{
         date: `${today.getFullYear()}/${today.getMonth() + 1}/15`,
         title: 'Title-1',
         desc: 'longlonglong description',
-        customProperty: ['Hello']
+        data: {
+          customProperty: ['Hello']
+        }
       },{
         date: `${today.getFullYear()}/${today.getMonth() + 1}/24`,
         title: 'Title-2',
-        customProperty: ['Hello']
+        data: {
+          customProperty: ['Hello']
+        }
       },{
         date: `${today.getFullYear()}/${today.getMonth() === 11 ? 1 : today.getMonth() + 2}/06`,
         title: 'Title-3',
         desc: 'description',
-        customProperty: ['Hello']
+        data: {
+          customProperty: ['Hello']
+        }
       }]
     }
   },

@@ -528,13 +528,14 @@ var inBrowser = typeof window !== 'undefined';
         }
         tempItem = {
           date: item.getFullYear() + '/' + (item.getMonth() + 1) + '/' + item.getDate(),
-          status: status
+          status: status,
+          data: {}
         };
         this.events.forEach(function (event) {
           if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__tools_js__["a" /* isEqualDateStr */])(event.date, tempItem.date)) {
-            // copy all the properties from event
-            // FIXME seems sketchy
-            Object.assign(tempItem, event);
+            tempItem.title = event.title;
+            tempItem.desc = event.desc || '';
+            tempItem.data = event.data;
           }
         });
         tempArr.push(tempItem);
