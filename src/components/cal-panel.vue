@@ -58,11 +58,16 @@ export default {
   },
   computed: {
     dayList () {
-        let firstDay = new Date(this.calendar.params.curYear+'/'+(this.calendar.params.curMonth+1)+'/01')
-        let startTimestamp = firstDay-1000*60*60*24*firstDay.getDay()
+        let firstDay = new Date(this.calendar.params.curYear, this.calendar.params.curMonth, 1)
+
+        let startDate = new Date(firstDay)
+        startDate.setDate(firstDay.getDate() - firstDay.getDay())
+
         let item, status, tempArr = [], tempItem
         for (let i = 0 ; i < 42 ; i++) {
-            item = new Date(startTimestamp + i*1000*60*60*24)
+            item = new Date(startDate);
+            item.setDate(startDate.getDate() + i);
+
             if (this.calendar.params.curMonth === item.getMonth()) {
               status = 1
             } else {
@@ -106,7 +111,9 @@ export default {
       this.$emit('month-changed', this.curYearMonth)
     },
     handleChangeCurday (date) {
-      this.$emit('cur-day-changed', date.date)
+      if (date.status) {
+        this.$emit('cur-day-changed', date.date)
+      }
     }
   }
 }

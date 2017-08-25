@@ -513,14 +513,19 @@ var inBrowser = typeof window !== 'undefined';
   },
   computed: {
     dayList: function dayList() {
-      var firstDay = new Date(this.calendar.params.curYear + '/' + (this.calendar.params.curMonth + 1) + '/01');
-      var startTimestamp = firstDay - 1000 * 60 * 60 * 24 * firstDay.getDay();
+      var firstDay = new Date(this.calendar.params.curYear, this.calendar.params.curMonth, 1);
+
+      var startDate = new Date(firstDay);
+      startDate.setDate(firstDay.getDate() - firstDay.getDay());
+
       var item = void 0,
           status = void 0,
           tempArr = [],
           tempItem = void 0;
       for (var i = 0; i < 42; i++) {
-        item = new Date(startTimestamp + i * 1000 * 60 * 60 * 24);
+        item = new Date(startDate);
+        item.setDate(startDate.getDate() + i);
+
         if (this.calendar.params.curMonth === item.getMonth()) {
           status = 1;
         } else {
@@ -564,7 +569,9 @@ var inBrowser = typeof window !== 'undefined';
       this.$emit('month-changed', this.curYearMonth);
     },
     handleChangeCurday: function handleChangeCurday(date) {
-      this.$emit('cur-day-changed', date.date);
+      if (date.status) {
+        this.$emit('cur-day-changed', date.date);
+      }
     }
   }
 });
@@ -668,7 +675,7 @@ var inBrowser = typeof window !== 'undefined';
           curYear: dateObj.getFullYear(),
           curMonth: dateObj.getMonth(),
           curDate: dateObj.getDate(),
-          curEventsDate: dateString
+          curEventsDate: 'all'
         };
       }
     }
@@ -684,10 +691,12 @@ var inBrowser = typeof window !== 'undefined';
       var events = this.events.filter(function (event) {
         return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools_js__["a" /* isEqualDateStr */])(event.date, date);
       });
-      this.selectedDayEvents = {
-        date: date,
-        events: events
-      };
+      if (events.length > 0) {
+        this.selectedDayEvents = {
+          date: date,
+          events: events
+        };
+      }
       this.$emit('day-changed', {
         date: date,
         events: events
@@ -699,8 +708,16 @@ var inBrowser = typeof window !== 'undefined';
   },
   watch: {
     calendarParams: function calendarParams() {
+      var _this = this;
+
       if (this.calendarParams.curEventsDate !== 'all') {
-        this.handleChangeCurDay(this.calendarParams.curEventsDate);
+        var events = this.events.filter(function (event) {
+          return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools_js__["a" /* isEqualDateStr */])(event.date, _this.calendarParams.curEventsDate);
+        });
+        this.selectedDayEvents = {
+          date: this.calendarParams.curEventsDate,
+          events: events
+        };
       } else {
         this.selectedDayEvents = {
           date: 'all',

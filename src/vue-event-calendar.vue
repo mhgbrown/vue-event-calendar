@@ -85,7 +85,7 @@ export default {
           curYear: dateObj.getFullYear(),
           curMonth: dateObj.getMonth(),
           curDate: dateObj.getDate(),
-          curEventsDate: dateString
+          curEventsDate: 'all'
         }
       }
     }
@@ -100,9 +100,11 @@ export default {
       let events = this.events.filter(function(event) {
         return isEqualDateStr(event.date, date)
       })
-      this.selectedDayEvents = {
-        date: date,
-        events: events
+      if (events.length > 0) {
+        this.selectedDayEvents = {
+          date: date,
+          events: events
+        }
       }
       this.$emit('day-changed', {
         date: date,
@@ -116,7 +118,13 @@ export default {
   watch: {
     calendarParams () {
       if (this.calendarParams.curEventsDate !== 'all') {
-        this.handleChangeCurDay(this.calendarParams.curEventsDate)
+        let events = this.events.filter(event => {
+          return isEqualDateStr(event.date, this.calendarParams.curEventsDate)
+        })
+        this.selectedDayEvents = {
+          date: this.calendarParams.curEventsDate,
+          events
+        }
       } else {
         this.selectedDayEvents = {
           date: 'all',
@@ -157,7 +165,7 @@ export default {
       width: 50%;
       background-color: @base-orange;
       color: @white;
-      padding: 40px 50px;
+      padding: 40px 45px;
       position: absolute;
       left: 50%;
       top: 0;
@@ -187,6 +195,18 @@ export default {
   width: 100%;
   *{
     box-sizing: border-box;
+  }
+  ::-webkit-scrollbar{
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 2px #c27736;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: #c27736;
   }
   .cal-wrapper{
     .cal-header{
@@ -295,6 +315,8 @@ export default {
     border-radius: 10px;
     .cal-events{
       height: 100%;
+      overflow-y: auto;
+      padding: 0 5px;
     }
     .date{
       max-width: 60%;
