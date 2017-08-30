@@ -17,7 +17,7 @@
             [calendar.options.className] : (date.date == selectedDay)
           }">
           <p class="date-num"
-            @click="handleChangeCurday(date)"
+            @click="handleChangeCurday(date, $event)"
             :style="{color: date.title != undefined ? ((date.date == selectedDay) ? '#fff' : customColor) : 'inherit'}">
             {{date.status ? date.date.split('/')[2] : '&nbsp'}}</p>
           <span v-if="date.status ? (today == date.date) : false" class="is-today" :style="{backgroundColor: customColor }" ></span>
@@ -110,9 +110,9 @@ export default {
       this.$EventCalendar.preMonth()
       this.$emit('month-changed', this.curYearMonth)
     },
-    handleChangeCurday (date) {
+    handleChangeCurday (date, event) {
       if (date.status) {
-        this.$emit('cur-day-changed', date.date)
+        this.$emit('cur-day-changed', date.date, event)
       }
     }
   }

@@ -568,9 +568,9 @@ var inBrowser = typeof window !== 'undefined';
       this.$EventCalendar.preMonth();
       this.$emit('month-changed', this.curYearMonth);
     },
-    handleChangeCurday: function handleChangeCurday(date) {
+    handleChangeCurday: function handleChangeCurday(date, event) {
       if (date.status) {
-        this.$emit('cur-day-changed', date.date);
+        this.$emit('cur-day-changed', date.date, event);
       }
     }
   }
@@ -687,7 +687,7 @@ var inBrowser = typeof window !== 'undefined';
   },
 
   methods: {
-    handleChangeCurDay: function handleChangeCurDay(date) {
+    handleChangeCurDay: function handleChangeCurDay(date, event) {
       var events = this.events.filter(function (event) {
         return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools_js__["a" /* isEqualDateStr */])(event.date, date);
       });
@@ -699,7 +699,8 @@ var inBrowser = typeof window !== 'undefined';
       }
       this.$emit('day-changed', {
         date: date,
-        events: events
+        events: events,
+        event: event
       });
     },
     handleMonthChanged: function handleMonthChanged(yearMonth) {
@@ -1022,7 +1023,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }),
       on: {
         "click": function($event) {
-          _vm.handleChangeCurday(date)
+          _vm.handleChangeCurday(date, $event)
         }
       }
     }, [_vm._v("\n          " + _vm._s(date.status ? date.date.split('/')[2] : ' '))]), _vm._v(" "), (date.status ? (_vm.today == date.date) : false) ? _c('span', {
