@@ -21,6 +21,7 @@
               @click="handleChangeCurday(date, $event)"
               :style="{color: date.title != undefined ? ((date.date == selectedDay) ? '#fff' : customColor) : 'inherit'}">
               {{date.status ? date.date.split('/')[2] : '&nbsp'}}</p>
+            <span v-if="date.date.split('/')[2] === '1'" class="month-label">{{ monthAbbrev(date.date.split('/')[1]) }}</span>
             <span v-if="date.status ? (today == date.date) : false" class="is-today" :style="{backgroundColor: customColor }" ></span>
             <span v-if="date.status ? (date.title != undefined) : false" class="is-event"
               :style="{borderColor: customColor, backgroundColor: (date.date == selectedDay) ? customColor : 'inherit'}"></span>
@@ -104,6 +105,9 @@ export default {
     }
   },
   methods: {
+    monthAbbrev (month) {
+      return this.i18n[this.calendar.options.locale].monthNamesShort[parseInt(month, 10) - 1]
+    },
     nextMonth () {
       this.$EventCalendar.nextMonth()
       this.$emit('month-changed', this.curYearMonth)

@@ -204,6 +204,7 @@ module.exports = function normalizeComponent (
   en: {
     dayNames: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
     monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    monthNamesShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     format: 'MM/yyyy',
     fullFormat: 'dd/MM/yyyy',
     dayEventsTitle: 'All Events',
@@ -757,6 +758,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -833,6 +835,9 @@ var inBrowser = typeof window !== 'undefined';
     }
   },
   methods: {
+    monthAbbrev: function monthAbbrev(month) {
+      return this.i18n[this.calendar.options.locale].monthNamesShort[parseInt(month, 10) - 1];
+    },
     nextMonth: function nextMonth() {
       this.$EventCalendar.nextMonth();
       this.$emit('month-changed', this.curYearMonth);
@@ -3965,7 +3970,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.handleChangeCurday(date, $event)
         }
       }
-    }, [_vm._v("\n            " + _vm._s(date.status ? date.date.split('/')[2] : ' '))]), _vm._v(" "), (date.status ? (_vm.today == date.date) : false) ? _c('span', {
+    }, [_vm._v("\n            " + _vm._s(date.status ? date.date.split('/')[2] : ' '))]), _vm._v(" "), (date.date.split('/')[2] === '1') ? _c('span', {
+      staticClass: "month-label"
+    }, [_vm._v(_vm._s(_vm.monthAbbrev(date.date.split('/')[1])))]) : _vm._e(), _vm._v(" "), (date.status ? (_vm.today == date.date) : false) ? _c('span', {
       staticClass: "is-today",
       style: ({
         backgroundColor: _vm.customColor

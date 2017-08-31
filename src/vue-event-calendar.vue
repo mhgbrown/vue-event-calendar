@@ -280,6 +280,12 @@ export default {
               background-color: @base-orange;
             }
           }
+          .month-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: 10px;
+          }
           .is-event{
             content: '';
             border: 1px solid @base-orange;
