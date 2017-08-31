@@ -9,23 +9,25 @@
       <div class="weeks">
         <span v-for="dayName in i18n[calendar.options.locale].dayNames" class="item">{{dayName}}</span>
       </div>
-      <div class="dates" >
-        <div v-for="date in dayList" class="item"
-          :class="{
-            today: date.status ? (today == date.date) : false,
-            event: date.status ? (date.title != undefined) : false,
-            [calendar.options.className] : (date.date == selectedDay)
-          }">
-          <p class="date-num"
-            @click="handleChangeCurday(date, $event)"
-            :style="{color: date.title != undefined ? ((date.date == selectedDay) ? '#fff' : customColor) : 'inherit'}">
-            {{date.status ? date.date.split('/')[2] : '&nbsp'}}</p>
-          <span v-if="date.status ? (today == date.date) : false" class="is-today" :style="{backgroundColor: customColor }" ></span>
-          <span v-if="date.status ? (date.title != undefined) : false" class="is-event"
-            :style="{borderColor: customColor, backgroundColor: (date.date == selectedDay) ? customColor : 'inherit'}"></span>
-          <slot :date="date"></slot>
+      <v-touch v-on:swipeleft="onSwipeLeft" v-on:swiperight="onSwipeRight">
+        <div class="dates" >
+          <div v-for="date in dayList" class="item"
+            :class="{
+              today: date.status ? (today == date.date) : false,
+              event: date.status ? (date.title != undefined) : false,
+              [calendar.options.className] : (date.date == selectedDay)
+            }">
+            <p class="date-num"
+              @click="handleChangeCurday(date, $event)"
+              :style="{color: date.title != undefined ? ((date.date == selectedDay) ? '#fff' : customColor) : 'inherit'}">
+              {{date.status ? date.date.split('/')[2] : '&nbsp'}}</p>
+            <span v-if="date.status ? (today == date.date) : false" class="is-today" :style="{backgroundColor: customColor }" ></span>
+            <span v-if="date.status ? (date.title != undefined) : false" class="is-event"
+              :style="{borderColor: customColor, backgroundColor: (date.date == selectedDay) ? customColor : 'inherit'}"></span>
+            <slot :date="date"></slot>
+          </div>
         </div>
-      </div>
+      </v-touch>
     </div>
   </div>
 </template>
@@ -114,6 +116,12 @@ export default {
       if (date.status) {
         this.$emit('cur-day-changed', date.date, event)
       }
+    },
+    onSwipeLeft() {
+      this.preMonth()
+    },
+    onSwipeRight() {
+      this.nextMonth()
     }
   }
 }
