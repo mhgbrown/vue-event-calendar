@@ -10,7 +10,9 @@ function install (Vue, options = {}) {
   const DEFAULT_OPTION = {
     locale: 'zh', //en
     color: ' #f29543',
-    className:'selected-day'
+    className:'selected-day',
+    monthLabels: false,
+    monthOverlap: false
   }
   let Calendar = {
     $vm: null,

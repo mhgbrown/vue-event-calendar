@@ -280,6 +280,9 @@ export default {
               background-color: @base-orange;
             }
           }
+          &.overlap {
+            color: rgb(176, 176, 176)
+          }
           .month-label {
             position: absolute;
             top: 0;

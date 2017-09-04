@@ -759,6 +759,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -804,7 +805,7 @@ var inBrowser = typeof window !== 'undefined';
         if (this.calendar.params.curMonth === item.getMonth()) {
           status = 1;
         } else {
-          status = 0;
+          status = this.shouldShowOverlappingMonths ? 2 : 0;
         }
         tempItem = {
           date: item.getFullYear() + '/' + (item.getMonth() + 1) + '/' + item.getDate(),
@@ -832,6 +833,12 @@ var inBrowser = typeof window !== 'undefined';
     },
     customColor: function customColor() {
       return this.calendar.options.color;
+    },
+    shouldShowMonthLabels: function shouldShowMonthLabels() {
+      return this.calendar.options.monthLabels;
+    },
+    shouldShowOverlappingMonths: function shouldShowOverlappingMonths() {
+      return this.calendar.options.monthOverlap;
     }
   },
   methods: {
@@ -1045,7 +1052,9 @@ function install(Vue) {
   var DEFAULT_OPTION = {
     locale: 'zh', //en
     color: ' #f29543',
-    className: 'selected-day'
+    className: 'selected-day',
+    monthLabels: false,
+    monthOverlap: false
   };
   var Calendar = {
     $vm: null,
@@ -3958,7 +3967,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "item",
       class: ( _obj = {
         today: date.status ? (_vm.today == date.date) : false,
-          event: date.status ? (date.title != undefined) : false
+          event: date.status ? (date.title != undefined) : false,
+          overlap: date.status === 2
       }, _obj[_vm.calendar.options.className] = (date.date == _vm.selectedDay), _obj )
     }, [_c('p', {
       staticClass: "date-num",
@@ -3970,7 +3980,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.handleChangeCurday(date, $event)
         }
       }
-    }, [_vm._v("\n            " + _vm._s(date.status ? date.date.split('/')[2] : ' '))]), _vm._v(" "), (date.date.split('/')[2] === '1') ? _c('span', {
+    }, [_vm._v("\n            " + _vm._s(date.status ? date.date.split('/')[2] : ' '))]), _vm._v(" "), (date.date.split('/')[2] === '1' && _vm.shouldShowMonthLabels) ? _c('span', {
       staticClass: "month-label"
     }, [_vm._v(_vm._s(_vm.monthAbbrev(date.date.split('/')[1])))]) : _vm._e(), _vm._v(" "), (date.status ? (_vm.today == date.date) : false) ? _c('span', {
       staticClass: "is-today",

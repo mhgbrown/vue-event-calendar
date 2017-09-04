@@ -15,13 +15,14 @@
             :class="{
               today: date.status ? (today == date.date) : false,
               event: date.status ? (date.title != undefined) : false,
-              [calendar.options.className] : (date.date == selectedDay)
+              [calendar.options.className] : (date.date == selectedDay),
+              overlap: date.status === 2
             }">
             <p class="date-num"
               @click="handleChangeCurday(date, $event)"
               :style="{color: date.title != undefined ? ((date.date == selectedDay) ? '#fff' : customColor) : 'inherit'}">
               {{date.status ? date.date.split('/')[2] : '&nbsp'}}</p>
-            <span v-if="date.date.split('/')[2] === '1'" class="month-label">{{ monthAbbrev(date.date.split('/')[1]) }}</span>
+            <span v-if="date.date.split('/')[2] === '1' && shouldShowMonthLabels" class="month-label">{{ monthAbbrev(date.date.split('/')[1]) }}</span>
             <span v-if="date.status ? (today == date.date) : false" class="is-today" :style="{backgroundColor: customColor }" ></span>
             <span v-if="date.status ? (date.title != undefined) : false" class="is-event"
               :style="{borderColor: customColor, backgroundColor: (date.date == selectedDay) ? customColor : 'inherit'}"></span>
@@ -74,7 +75,7 @@ export default {
             if (this.calendar.params.curMonth === item.getMonth()) {
               status = 1
             } else {
-              status = 0
+              status = this.shouldShowOverlappingMonths ? 2 : 0
             }
             tempItem = {
               date: `${item.getFullYear()}/${item.getMonth()+1}/${item.getDate()}`,
@@ -102,6 +103,12 @@ export default {
     },
     customColor () {
       return this.calendar.options.color
+    },
+    shouldShowMonthLabels () {
+      return this.calendar.options.monthLabels
+    },
+    shouldShowOverlappingMonths () {
+      return this.calendar.options.monthOverlap
     }
   },
   methods: {
