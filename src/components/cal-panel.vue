@@ -129,10 +129,10 @@ export default {
       }
     },
     onSwipeLeft() {
-      this.preMonth()
+      this.nextMonth()
     },
     onSwipeRight() {
-      this.nextMonth()
+      this.preMonth()
     }
   }
 }

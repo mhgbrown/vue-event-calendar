@@ -859,10 +859,10 @@ var inBrowser = typeof window !== 'undefined';
       }
     },
     onSwipeLeft: function onSwipeLeft() {
-      this.preMonth();
+      this.nextMonth();
     },
     onSwipeRight: function onSwipeRight() {
-      this.nextMonth();
+      this.preMonth();
     }
   }
 });
