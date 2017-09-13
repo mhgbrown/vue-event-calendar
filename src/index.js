@@ -12,7 +12,9 @@ function install (Vue, options = {}) {
     color: ' #f29543',
     className:'selected-day',
     monthLabels: false,
-    monthOverlap: false
+    monthOverlap: false,
+    canNavigatePast: true,
+    canNavigateFuture: true
   }
   let Calendar = {
     $vm: null,
@@ -41,6 +43,12 @@ function install (Vue, options = {}) {
       }
     },
     nextMonth () {
+      if (!calendarOptions.canNavigateFuture
+        && dateObj.getMonth() === this.$vm.CALENDAR_EVENTS_DATA.params.curMonth
+        && dateObj.getFullYear() === this.$vm.CALENDAR_EVENTS_DATA.params.curYear) {
+        return
+      }
+
       if (this.$vm.CALENDAR_EVENTS_DATA.params.curMonth < 11) {
         this.$vm.CALENDAR_EVENTS_DATA.params.curMonth++
       } else {
@@ -49,6 +57,12 @@ function install (Vue, options = {}) {
       }
     },
     preMonth () {
+      if (!calendarOptions.canNavigatePast
+        && dateObj.getMonth() === this.$vm.CALENDAR_EVENTS_DATA.params.curMonth
+        && dateObj.getFullYear() === this.$vm.CALENDAR_EVENTS_DATA.params.curYear) {
+        return
+      }
+
       if (this.$vm.CALENDAR_EVENTS_DATA.params.curMonth > 0) {
         this.$vm.CALENDAR_EVENTS_DATA.params.curMonth--
       } else {

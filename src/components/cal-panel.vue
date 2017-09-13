@@ -9,7 +9,7 @@
       <div class="weeks">
         <span v-for="dayName in i18n[calendar.options.locale].dayNames" class="item">{{dayName}}</span>
       </div>
-      <v-touch v-on:swipeleft="onSwipeLeft" v-on:swiperight="onSwipeRight">
+      <v-touch v-on:swipeleft="onSwipeLeft" v-on:swiperight="onSwipeRight" v-bind:swipe-options="{ direction: 'horizontal' }">
         <div class="dates" >
           <div v-for="date in dayList" class="item"
             :class="{

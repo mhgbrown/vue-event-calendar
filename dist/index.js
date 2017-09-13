@@ -1054,7 +1054,9 @@ function install(Vue) {
     color: ' #f29543',
     className: 'selected-day',
     monthLabels: false,
-    monthOverlap: false
+    monthOverlap: false,
+    canNavigatePast: true,
+    canNavigateFuture: true
   };
   var Calendar = {
     $vm: null,
@@ -1083,6 +1085,10 @@ function install(Vue) {
       }
     },
     nextMonth: function nextMonth() {
+      if (!calendarOptions.canNavigateFuture && dateObj.getMonth() === this.$vm.CALENDAR_EVENTS_DATA.params.curMonth && dateObj.getFullYear() === this.$vm.CALENDAR_EVENTS_DATA.params.curYear) {
+        return;
+      }
+
       if (this.$vm.CALENDAR_EVENTS_DATA.params.curMonth < 11) {
         this.$vm.CALENDAR_EVENTS_DATA.params.curMonth++;
       } else {
@@ -1091,6 +1097,10 @@ function install(Vue) {
       }
     },
     preMonth: function preMonth() {
+      if (!calendarOptions.canNavigatePast && dateObj.getMonth() === this.$vm.CALENDAR_EVENTS_DATA.params.curMonth && dateObj.getFullYear() === this.$vm.CALENDAR_EVENTS_DATA.params.curYear) {
+        return;
+      }
+
       if (this.$vm.CALENDAR_EVENTS_DATA.params.curMonth > 0) {
         this.$vm.CALENDAR_EVENTS_DATA.params.curMonth--;
       } else {
@@ -3956,6 +3966,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "item"
     }, [_vm._v(_vm._s(dayName))])
   })), _vm._v(" "), _c('v-touch', {
+    attrs: {
+      "swipe-options": {
+        direction: 'horizontal'
+      }
+    },
     on: {
       "swipeleft": _vm.onSwipeLeft,
       "swiperight": _vm.onSwipeRight
