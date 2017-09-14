@@ -46,7 +46,7 @@ function install (Vue, options = {}) {
       if (!calendarOptions.canNavigateFuture
         && dateObj.getMonth() === this.$vm.CALENDAR_EVENTS_DATA.params.curMonth
         && dateObj.getFullYear() === this.$vm.CALENDAR_EVENTS_DATA.params.curYear) {
-        return
+        return false
       }
 
       if (this.$vm.CALENDAR_EVENTS_DATA.params.curMonth < 11) {
@@ -55,12 +55,14 @@ function install (Vue, options = {}) {
         this.$vm.CALENDAR_EVENTS_DATA.params.curYear++
         this.$vm.CALENDAR_EVENTS_DATA.params.curMonth = 0
       }
+
+      return true
     },
     preMonth () {
       if (!calendarOptions.canNavigatePast
         && dateObj.getMonth() === this.$vm.CALENDAR_EVENTS_DATA.params.curMonth
         && dateObj.getFullYear() === this.$vm.CALENDAR_EVENTS_DATA.params.curYear) {
-        return
+        return false
       }
 
       if (this.$vm.CALENDAR_EVENTS_DATA.params.curMonth > 0) {
@@ -69,6 +71,8 @@ function install (Vue, options = {}) {
         this.$vm.CALENDAR_EVENTS_DATA.params.curYear--
         this.$vm.CALENDAR_EVENTS_DATA.params.curMonth = 11
       }
+
+      return true
     }
   }
 

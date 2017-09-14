@@ -116,11 +116,17 @@ export default {
       return this.i18n[this.calendar.options.locale].monthNamesShort[parseInt(month, 10) - 1]
     },
     nextMonth () {
-      this.$EventCalendar.nextMonth()
+      if(!this.$EventCalendar.nextMonth()) {
+        return
+      }
+
       this.$emit('month-changed', this.curYearMonth)
     },
     preMonth () {
-      this.$EventCalendar.preMonth()
+      if(!this.$EventCalendar.preMonth()) {
+        return
+      }
+
       this.$emit('month-changed', this.curYearMonth)
     },
     handleChangeCurday (date, event) {

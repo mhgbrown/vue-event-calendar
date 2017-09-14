@@ -846,11 +846,17 @@ var inBrowser = typeof window !== 'undefined';
       return this.i18n[this.calendar.options.locale].monthNamesShort[parseInt(month, 10) - 1];
     },
     nextMonth: function nextMonth() {
-      this.$EventCalendar.nextMonth();
+      if (!this.$EventCalendar.nextMonth()) {
+        return;
+      }
+
       this.$emit('month-changed', this.curYearMonth);
     },
     preMonth: function preMonth() {
-      this.$EventCalendar.preMonth();
+      if (!this.$EventCalendar.preMonth()) {
+        return;
+      }
+
       this.$emit('month-changed', this.curYearMonth);
     },
     handleChangeCurday: function handleChangeCurday(date, event) {
@@ -1086,7 +1092,7 @@ function install(Vue) {
     },
     nextMonth: function nextMonth() {
       if (!calendarOptions.canNavigateFuture && dateObj.getMonth() === this.$vm.CALENDAR_EVENTS_DATA.params.curMonth && dateObj.getFullYear() === this.$vm.CALENDAR_EVENTS_DATA.params.curYear) {
-        return;
+        return false;
       }
 
       if (this.$vm.CALENDAR_EVENTS_DATA.params.curMonth < 11) {
@@ -1095,10 +1101,12 @@ function install(Vue) {
         this.$vm.CALENDAR_EVENTS_DATA.params.curYear++;
         this.$vm.CALENDAR_EVENTS_DATA.params.curMonth = 0;
       }
+
+      return true;
     },
     preMonth: function preMonth() {
       if (!calendarOptions.canNavigatePast && dateObj.getMonth() === this.$vm.CALENDAR_EVENTS_DATA.params.curMonth && dateObj.getFullYear() === this.$vm.CALENDAR_EVENTS_DATA.params.curYear) {
-        return;
+        return false;
       }
 
       if (this.$vm.CALENDAR_EVENTS_DATA.params.curMonth > 0) {
@@ -1107,6 +1115,8 @@ function install(Vue) {
         this.$vm.CALENDAR_EVENTS_DATA.params.curYear--;
         this.$vm.CALENDAR_EVENTS_DATA.params.curMonth = 11;
       }
+
+      return true;
     }
   };
 
