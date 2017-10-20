@@ -202,12 +202,12 @@ export default {
     height: 8px;
   }
   ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 2px #c27736;
+    box-shadow: inset 0 0 2px rgba(0,0,0,.2);
     border-radius: 5px;
   }
   ::-webkit-scrollbar-thumb {
     border-radius: 5px;
-    background: #c27736;
+    background: rgba(0,0,0,.2);
   }
   .cal-wrapper{
     .cal-header{
@@ -324,9 +324,10 @@ export default {
   .events-wrapper{
     border-radius: 10px;
     .cal-events{
-      height: 100%;
+      height: 95%;
       overflow-y: auto;
       padding: 0 5px;
+      margin: 15px 0;
     }
     .date{
       max-width: 60%;
@@ -346,6 +347,9 @@ export default {
       border-radius: 5px;
       color: #323232;
       position: relative;
+      &:first-child{
+        margin-top: 0;
+      }
       .title{
         height: 40px;
         line-height: 40px;
