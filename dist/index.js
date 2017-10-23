@@ -825,7 +825,9 @@ var inBrowser = typeof window !== 'undefined';
     return {
       i18n: __WEBPACK_IMPORTED_MODULE_0__i18n_js__["a" /* default */],
       deltaX: 0,
-      panning: false
+      panning: false,
+      ticking: false,
+      animationFrame: null
     };
   },
 
@@ -982,22 +984,32 @@ var inBrowser = typeof window !== 'undefined';
       this.panning = true;
     },
     onPan: function onPan(event) {
-      if (!this.calendar.options.canNavigateFuture && event.deltaX < 0 && this.onCurrentMonth) {
-        event.preventDefault();
-        this.deltaX = 0;
+      var _this2 = this;
+
+      if (this.ticking) {
         return;
       }
 
-      if (!this.calendar.options.canNavigatePast && event.deltaX > 0 && this.onCurrentMonth) {
+      this.ticking = true;
+      this.animationFrame = window.requestAnimationFrame(function () {
+        return _this2.onPanUpdate(event);
+      });
+    },
+    onPanUpdate: function onPanUpdate(event) {
+      var newDeltaX = event.deltaX;
+
+      if (this.onCurrentMonth && (!this.calendar.options.canNavigateFuture && event.deltaX < 0 || !this.calendar.options.canNavigatePast && event.deltaX > 0)) {
         event.preventDefault();
-        this.deltaX = 0;
-        return;
+        newDeltaX = 0;
       }
 
-      this.deltaX = event.deltaX;
+      this.deltaX = newDeltaX;
+      this.ticking = false;
     },
     onPanEnd: function onPanEnd(event) {
       this.panning = false;
+
+      window.cancelAnimationFrame(this.animationFrame);
 
       var deltaX = Math.abs(this.deltaX / this.$refs.datesContainer.offsetWidth);
       var rest = deltaX - 0.5;
@@ -1008,6 +1020,8 @@ var inBrowser = typeof window !== 'undefined';
       } else {
         this.deltaX = 0;
       }
+
+      this.ticking = false;
     },
     onTransitionEnd: function onTransitionEnd(event) {
       if (this.panning) {

@@ -59,7 +59,9 @@ export default {
     return {
       i18n,
       deltaX: 0,
-      panning: false
+      panning: false,
+      ticking: false,
+      animationFrame: null
     }
   },
   props: {
@@ -209,22 +211,30 @@ export default {
       this.panning = true
     },
     onPan (event) {
-      if (!this.calendar.options.canNavigateFuture && event.deltaX < 0 && this.onCurrentMonth) {
-        event.preventDefault()
-        this.deltaX = 0
+      if (this.ticking) {
         return
       }
 
-      if (!this.calendar.options.canNavigatePast && event.deltaX > 0 && this.onCurrentMonth) {
+      this.ticking = true
+      this.animationFrame = window.requestAnimationFrame(() => this.onPanUpdate(event))
+    },
+    onPanUpdate(event) {
+      let newDeltaX = event.deltaX
+
+      if (this.onCurrentMonth &&
+          (!this.calendar.options.canNavigateFuture && event.deltaX < 0 ||
+          !this.calendar.options.canNavigatePast && event.deltaX > 0)) {
         event.preventDefault()
-        this.deltaX = 0
-        return
+        newDeltaX = 0
       }
 
-      this.deltaX = event.deltaX
+      this.deltaX = newDeltaX
+      this.ticking = false
     },
     onPanEnd (event) {
       this.panning = false
+
+      window.cancelAnimationFrame(this.animationFrame)
 
       let deltaX = Math.abs(this.deltaX / this.$refs.datesContainer.offsetWidth)
       let rest = deltaX - 0.5
@@ -235,6 +245,8 @@ export default {
       } else {
         this.deltaX = 0
       }
+
+      this.ticking = false
     },
     onTransitionEnd (event) {
       if (this.panning) {
