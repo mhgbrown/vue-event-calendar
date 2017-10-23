@@ -982,6 +982,18 @@ var inBrowser = typeof window !== 'undefined';
       this.panning = true;
     },
     onPan: function onPan(event) {
+      if (!this.calendar.options.canNavigateFuture && event.deltaX < 0 && this.onCurrentMonth) {
+        event.preventDefault();
+        this.deltaX = 0;
+        return;
+      }
+
+      if (!this.calendar.options.canNavigatePast && event.deltaX > 0 && this.onCurrentMonth) {
+        event.preventDefault();
+        this.deltaX = 0;
+        return;
+      }
+
       this.deltaX = event.deltaX;
     },
     onPanEnd: function onPanEnd(event) {
@@ -990,16 +1002,6 @@ var inBrowser = typeof window !== 'undefined';
       var deltaX = Math.abs(this.deltaX / this.$refs.datesContainer.offsetWidth);
       var rest = deltaX - 0.5;
       var deltaXSign = this.deltaX < 0 ? -1 : 1;
-
-      if (!this.calendar.options.canNavigateFuture && deltaXSign < 0 && this.onCurrentMonth) {
-        this.deltaX = 0;
-        return;
-      }
-
-      if (!this.calendar.options.canNavigatePast && deltaXSign > 0 && this.onCurrentMonth) {
-        this.deltaX = 0;
-        return;
-      }
 
       if (deltaX > 0.5) {
         this.deltaX = this.$refs.datesContainer.offsetWidth * (1 + Math.round(rest)) * deltaXSign;

@@ -209,6 +209,18 @@ export default {
       this.panning = true
     },
     onPan (event) {
+      if (!this.calendar.options.canNavigateFuture && event.deltaX < 0 && this.onCurrentMonth) {
+        event.preventDefault()
+        this.deltaX = 0
+        return
+      }
+
+      if (!this.calendar.options.canNavigatePast && event.deltaX > 0 && this.onCurrentMonth) {
+        event.preventDefault()
+        this.deltaX = 0
+        return
+      }
+
       this.deltaX = event.deltaX
     },
     onPanEnd (event) {
@@ -217,16 +229,6 @@ export default {
       let deltaX = Math.abs(this.deltaX / this.$refs.datesContainer.offsetWidth)
       let rest = deltaX - 0.5
       let deltaXSign = this.deltaX < 0 ? -1 : 1
-
-      if (!this.calendar.options.canNavigateFuture && deltaXSign < 0 && this.onCurrentMonth) {
-        this.deltaX = 0
-        return
-      }
-
-      if (!this.calendar.options.canNavigatePast && deltaXSign > 0 && this.onCurrentMonth) {
-        this.deltaX = 0
-        return
-      }
 
       if (deltaX > 0.5) {
         this.deltaX = this.$refs.datesContainer.offsetWidth * (1 + Math.round(rest)) * deltaXSign
