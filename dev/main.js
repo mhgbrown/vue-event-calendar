@@ -5,7 +5,7 @@ import vueEventCalendar from '../src/'
 // import vueEventCalendar from '../dist'
 // import '../dist/style.css'
 
-Vue.use(vueEventCalendar, {locale: 'en', weekStartOn: 0, monthLabels: true, monthOverlap: true})
+Vue.use(vueEventCalendar, {locale: 'en', weekStartOn: 0, monthLabels: true, monthOverlap: false, canNavigateFuture: true, canNavigatePast: true})
 
 new Vue({
   el: '#app',

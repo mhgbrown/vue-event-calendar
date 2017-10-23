@@ -804,6 +804,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -813,7 +823,9 @@ var inBrowser = typeof window !== 'undefined';
   name: 'cal-panel',
   data: function data() {
     return {
-      i18n: __WEBPACK_IMPORTED_MODULE_0__i18n_js__["a" /* default */]
+      i18n: __WEBPACK_IMPORTED_MODULE_0__i18n_js__["a" /* default */],
+      deltaX: 0,
+      panning: false
     };
   },
 
@@ -833,46 +845,75 @@ var inBrowser = typeof window !== 'undefined';
   },
   computed: {
     dayList: function dayList() {
-      var firstDay = new Date(this.calendar.params.curYear, this.calendar.params.curMonth, 1);
-      var dayOfWeek = firstDay.getDay();
-      // 根据当前日期计算偏移量
-      if (this.calendar.options.weekStartOn > dayOfWeek) {
-        dayOfWeek = dayOfWeek - this.calendar.options.weekStartOn + 7;
-      } else if (this.calendar.options.weekStartOn < dayOfWeek) {
-        dayOfWeek = dayOfWeek - this.calendar.options.weekStartOn;
-      }
+      var _this = this;
 
-      var startDate = new Date(firstDay);
-      startDate.setDate(firstDay.getDate() - dayOfWeek);
+      var dateObj = new Date();
+      var months = [];
+      for (var i = -2; i <= 2; i++) {
+        var month = (12 + this.calendar.params.curMonth + i) % 12;
+        var year = this.calendar.params.curYear;
 
-      var item = void 0,
-          status = void 0,
-          tempArr = [],
-          tempItem = void 0;
-      for (var i = 0; i < 42; i++) {
-        item = new Date(startDate);
-        item.setDate(startDate.getDate() + i);
-
-        if (this.calendar.params.curMonth === item.getMonth()) {
-          status = 1;
-        } else {
-          status = this.shouldShowOverlappingMonths ? 2 : 0;
+        if (this.calendar.params.curMonth + i < 0) {
+          year = this.calendar.params.curYear - 1;
+        } else if (this.calendar.params.curMonth + i > 11) {
+          year = this.calendar.params.curYear + 1;
         }
-        tempItem = {
-          date: item.getFullYear() + '/' + (item.getMonth() + 1) + '/' + item.getDate(),
-          status: status,
-          data: {}
-        };
-        this.events.forEach(function (event) {
-          if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__tools_js__["a" /* isEqualDateStr */])(event.date, tempItem.date)) {
-            tempItem.title = event.title;
-            tempItem.desc = event.desc || '';
-            tempItem.data = event.data;
-          }
+
+        months.push({
+          month: month,
+          year: year
         });
-        tempArr.push(tempItem);
       }
-      return tempArr;
+
+      var _loop = function _loop(m) {
+        var firstDay = new Date(months[m].year, months[m].month, 1);
+        var dayOfWeek = firstDay.getDay();
+        // 根据当前日期计算偏移量
+        if (_this.calendar.options.weekStartOn > dayOfWeek) {
+          dayOfWeek = dayOfWeek - _this.calendar.options.weekStartOn + 7;
+        } else if (_this.calendar.options.weekStartOn < dayOfWeek) {
+          dayOfWeek = dayOfWeek - _this.calendar.options.weekStartOn;
+        }
+
+        var startDate = new Date(firstDay);
+        startDate.setDate(firstDay.getDate() - dayOfWeek);
+
+        var item = void 0,
+            status = void 0,
+            tempArr = [],
+            tempItem = void 0;
+        for (var _i = 0; _i < 42; _i++) {
+          item = new Date(startDate);
+          item.setDate(startDate.getDate() + _i);
+
+          if (months[m].month === item.getMonth()) {
+            status = 1;
+          } else {
+            status = _this.shouldShowOverlappingMonths ? 2 : 0;
+          }
+          tempItem = {
+            date: item.getFullYear() + '/' + (item.getMonth() + 1) + '/' + item.getDate(),
+            status: status,
+            data: {}
+          };
+          _this.events.forEach(function (event) {
+            if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__tools_js__["a" /* isEqualDateStr */])(event.date, tempItem.date) && (months[m].month === item.getMonth() || months[m].month !== item.getMonth() && _this.shouldShowOverlappingMonths)) {
+              tempItem.title = event.title;
+              tempItem.desc = event.desc || '';
+              tempItem.data = event.data;
+            }
+          });
+          tempArr.push(tempItem);
+        }
+
+        months[m].dates = tempArr;
+      };
+
+      for (var m = 0; m < months.length; m++) {
+        _loop(m);
+      }
+
+      return months;
     },
     today: function today() {
       var dateObj = new Date();
@@ -890,9 +931,31 @@ var inBrowser = typeof window !== 'undefined';
     },
     shouldShowOverlappingMonths: function shouldShowOverlappingMonths() {
       return this.calendar.options.monthOverlap;
+    },
+    canNavigateFuture: function canNavigateFuture() {
+      return this.calendar.options.canNavigateFuture;
+    },
+    canNavigatePast: function canNavigatePast() {
+      return this.calendar.options.canNavigatePast;
+    },
+    onCurrentMonth: function onCurrentMonth() {
+      var dateObj = new Date();
+      return this.calendar.params.curMonth === dateObj.getMonth() && this.calendar.params.curYear === dateObj.getFullYear();
     }
   },
   methods: {
+    isFuture: function isFuture(month, year) {
+      var dateObj = new Date();
+      return month > dateObj.getMonth() && year === dateObj.getFullYear() || year > dateObj.getFullYear();
+    },
+    isPast: function isPast(month, year) {
+      var dateObj = new Date();
+      return month < dateObj.getMonth() && year === dateObj.getFullYear() || year < dateObj.getFullYear();
+    },
+    isCurrent: function isCurrent(month, year) {
+      var dateObj = new Date();
+      return month === dateObj.getMonth() && year === dateObj.getFullYear();
+    },
     monthAbbrev: function monthAbbrev(month) {
       return this.i18n[this.calendar.options.locale].monthNamesShort[parseInt(month, 10) - 1];
     },
@@ -915,11 +978,60 @@ var inBrowser = typeof window !== 'undefined';
         this.$emit('cur-day-changed', date.date, event);
       }
     },
-    onSwipeLeft: function onSwipeLeft() {
-      this.nextMonth();
+    onPanStart: function onPanStart(event) {
+      this.panning = true;
     },
-    onSwipeRight: function onSwipeRight() {
-      this.preMonth();
+    onPan: function onPan(event) {
+      this.deltaX = event.deltaX;
+    },
+    onPanEnd: function onPanEnd(event) {
+      this.panning = false;
+
+      var deltaX = Math.abs(this.deltaX / this.$refs.datesContainer.offsetWidth);
+      var rest = deltaX - 0.5;
+      var deltaXSign = this.deltaX < 0 ? -1 : 1;
+
+      if (!this.calendar.options.canNavigateFuture && deltaXSign < 0 && this.onCurrentMonth) {
+        this.deltaX = 0;
+        return;
+      }
+
+      if (!this.calendar.options.canNavigatePast && deltaXSign > 0 && this.onCurrentMonth) {
+        this.deltaX = 0;
+        return;
+      }
+
+      if (deltaX > 0.5) {
+        this.deltaX = this.$refs.datesContainer.offsetWidth * (1 + Math.round(rest)) * deltaXSign;
+      } else {
+        this.deltaX = 0;
+      }
+    },
+    onTransitionEnd: function onTransitionEnd(event) {
+      if (this.panning) {
+        return;
+      }
+
+      var monthDelta = this.deltaX / this.$refs.datesContainer.offsetWidth;
+      var times = Math.abs(monthDelta);
+
+      if (monthDelta < 0) {
+        this.panning = true;
+        // FIXME instead just jump to the month so we don't fire
+        // the month changed event twice
+        for (var i = 0; i < times; i++) {
+          this.nextMonth();
+        }
+        this.deltaX = 0;
+      } else if (monthDelta > 0) {
+        this.panning = true;
+        // FIXME instead just jump to the month so we don't fire
+        // the month changed event twice
+        for (var _i2 = 0; _i2 < times; _i2++) {
+          this.preMonth();
+        }
+        this.deltaX = 0;
+      }
     }
   }
 });
@@ -4029,51 +4141,70 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_vm._v("\n        " + _vm._s(_vm.i18n[_vm.calendar.options.locale].dayNames[(dayIndex + _vm.calendar.options.weekStartOn) % 7]) + "\n      ")])
   })), _vm._v(" "), _c('v-touch', {
     attrs: {
-      "swipe-options": {
+      "pan-options": {
         direction: 'horizontal'
       }
     },
     on: {
-      "swipeleft": _vm.onSwipeLeft,
-      "swiperight": _vm.onSwipeRight
+      "pan": _vm.onPan,
+      "panstart": _vm.onPanStart,
+      "panend": _vm.onPanEnd
     }
   }, [_c('div', {
-    staticClass: "dates"
-  }, _vm._l((_vm.dayList), function(date) {
+    ref: "datesContainer",
+    staticClass: "dates-container",
+    class: {
+      'panning': _vm.panning, 'navigate-past-disabled': !_vm.canNavigatePast, 'navigate-future-disabled': !_vm.canNavigateFuture
+    },
+    style: ({
+      transform: ("translate3d(" + _vm.deltaX + "px, 0, 0)"),
+      webkitTransform: ("translate3d(" + _vm.deltaX + "px, 0, 0)")
+    }),
+    on: {
+      "transitionend": _vm.onTransitionEnd
+    }
+  }, _vm._l((_vm.dayList), function(month) {
     return _c('div', {
-      staticClass: "item",
-      class: ( _obj = {
-        today: date.status ? (_vm.today == date.date) : false,
-          event: date.status ? (date.title != undefined) : false,
-          overlap: date.status === 2
-      }, _obj[_vm.calendar.options.className] = (date.date == _vm.selectedDay), _obj )
-    }, [_c('p', {
-      staticClass: "date-num",
-      style: ({
-        color: date.title != undefined ? ((date.date == _vm.selectedDay) ? '#fff' : _vm.customColor) : 'inherit'
-      }),
-      on: {
-        "click": function($event) {
-          _vm.handleChangeCurday(date, $event)
-        }
+      staticClass: "dates",
+      class: {
+        'future-dates': _vm.isFuture(month.month, month.year), 'past-dates': _vm.isPast(month.month, month.year), 'current-dates': _vm.isCurrent(month.month, month.year)
       }
-    }, [_vm._v("\n            " + _vm._s(date.status ? date.date.split('/')[2] : ' '))]), _vm._v(" "), (date.date.split('/')[2] === '1' && _vm.shouldShowMonthLabels) ? _c('span', {
-      staticClass: "month-label"
-    }, [_vm._v(_vm._s(_vm.monthAbbrev(date.date.split('/')[1])))]) : _vm._e(), _vm._v(" "), (date.status ? (_vm.today == date.date) : false) ? _c('span', {
-      staticClass: "is-today",
-      style: ({
-        backgroundColor: _vm.customColor
-      })
-    }) : _vm._e(), _vm._v(" "), (date.status ? (date.title != undefined) : false) ? _c('span', {
-      staticClass: "is-event",
-      style: ({
-        borderColor: _vm.customColor,
-        backgroundColor: (date.date == _vm.selectedDay) ? _vm.customColor : 'inherit'
-      })
-    }) : _vm._e(), _vm._v(" "), _vm._t("default", null, {
-      date: date
-    })], 2)
-    var _obj;
+    }, _vm._l((month.dates), function(date) {
+      return _c('div', {
+        staticClass: "item",
+        class: ( _obj = {
+          today: date.status ? (_vm.today == date.date) : false,
+            event: date.status ? (date.title != undefined) : false,
+            overlap: date.status === 2
+        }, _obj[_vm.calendar.options.className] = (date.date == _vm.selectedDay), _obj )
+      }, [_c('p', {
+        staticClass: "date-num",
+        style: ({
+          color: date.title != undefined ? ((date.date == _vm.selectedDay) ? '#fff' : _vm.customColor) : 'inherit'
+        }),
+        on: {
+          "click": function($event) {
+            _vm.handleChangeCurday(date, $event)
+          }
+        }
+      }, [_vm._v("\n              " + _vm._s(date.status ? date.date.split('/')[2] : ' '))]), _vm._v(" "), (date.date.split('/')[2] === '1' && _vm.shouldShowMonthLabels && (date.status === 1 || _vm.shouldShowOverlappingMonths)) ? _c('span', {
+        staticClass: "month-label"
+      }, [_vm._v(_vm._s(_vm.monthAbbrev(date.date.split('/')[1])))]) : _vm._e(), _vm._v(" "), (date.status ? (_vm.today == date.date) : false) ? _c('span', {
+        staticClass: "is-today",
+        style: ({
+          backgroundColor: _vm.customColor
+        })
+      }) : _vm._e(), _vm._v(" "), (date.status ? (date.title != undefined) : false) ? _c('span', {
+        staticClass: "is-event",
+        style: ({
+          borderColor: _vm.customColor,
+          backgroundColor: (date.date == _vm.selectedDay) ? _vm.customColor : 'inherit'
+        })
+      }) : _vm._e(), _vm._v(" "), _vm._t("default", null, {
+        date: date
+      })], 2)
+      var _obj;
+    }))
   }))])], 1)])
 },staticRenderFns: []}
 

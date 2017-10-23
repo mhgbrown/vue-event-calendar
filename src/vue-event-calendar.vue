@@ -320,6 +320,35 @@ export default {
         }
       }
     }
+
+    .dates-container {
+      white-space: nowrap;
+      transition: transform 250ms ease, -webkit-transform 250ms ease;
+
+      &.panning {
+        transition: none;
+      }
+
+      .dates {
+        display: inline-block;
+
+        &:first-child {
+          margin-left: -200%;
+        }
+      }
+
+      &.navigate-past-disabled {
+        .dates.past-dates {
+          visibility: hidden;
+        }
+      }
+
+      &.navigate-future-disabled {
+        .dates.future-dates {
+          visibility: hidden;
+        }
+      }
+    }
   }
   .events-wrapper{
     border-radius: 10px;

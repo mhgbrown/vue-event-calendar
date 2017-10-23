@@ -19,7 +19,7 @@
     <h2 class="t-center">Date slot</h2>
     <vue-event-calendar :events="demoEvents">
       <template slot="date" scope="props">
-        <span v-if="props.date.data.customProperty" class="mark">
+        <span v-if="props.date.data && props.date.data.customProperty" class="mark">
           {{ props.date.data.customProperty[0] }}
         </span>
       </template>
