@@ -1,6 +1,6 @@
 # vue-event-calendar
 
-** This repo differs from the original in that it enables panning navigation, overlapping day numbers, and prevention of month navigation in the future and/or past.**
+***This repo differs from the original in that it enables panning navigation, overlapping day numbers, and prevention of month navigation in the future and/or past.***
 
 > A simple events calendar for Vue2, no dependencies except Vue2. responsive & mobile first.
 > [Live Demo Here](http://geoffzhu.cn/vue-event-calendar/)
